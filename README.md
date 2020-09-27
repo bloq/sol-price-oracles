@@ -1,86 +1,47 @@
-# sol-mass-payouts
+# sol-price-oracles
 
-Utilities enabling the mass distribution of assets, with a single
-funding transaction.
+A simple factory wrapper around price oracles from the Uniswap team.
 
 ## Summary example
 
-A funder, such as a yield farming distribution, wishes to distribute
-1,000,000 XYZ tokens to 50,000 addresses.
+A smart contract system wishes to manage price oracles, as described in
+[Uniswap Core Concepts - Oracles](https://uniswap.org/docs/v2/core-concepts/oracles/).
 
-Off-chain, the funder builds a merkle tree of (address,amount) pairs for XYZ
-payouts.
 
-The funder sends 1,000,000 XYZ tokens, and the Merkle root hash, to this
-MerkleBox contract for secure storage.
+This factory complex is [TO BE] independently deployed.  This adds a
+convenience factor for developers wishing to sample Uniswap prices.
 
-Then, at any time, users may claim their XYZ tokens by providing a
-Merkle proof of their (address,amount).
+This factory also adds a trust element:  [NOTE:  NOT YET!]  When
+deployed, this factory will produce oracles that may be trusted to be
+audited, behave in a predictable, known fashion, and have not been
+tampered with by potentially unscrupulous actors.
 
-The end result is aggregating all the payouts into a single blockchain
-transaction _from the funder_.  (Users must still individually issue
-claim transactions)
+As such, use of oracles created by this factory removes an element of
+trust from downstream projects - some trust is shifted to this system -
+thus increasing the trustless factor of downstream projects.
 
 ## Public operations (APIs)
 
-### Anyone:  Validate claim
+### Anyone:  Update price database
 
-Validate a supplied merkle receipt is associated with a valid, unspent claim.
+Update on-chain state with price data (if and only if the requisite
+time period has elapsed).
 
-### User:   Claim tokens
+### Anyone:  Query price database
 
-Present a valid merkle receipt, and receive the associated tokens.
+Given an input ERC20 tokenA address and tokenA amount, return
+the amount of tokenB that would be produced by a swap.
 
-User must be the address in the claim, and the claim must be unspent.
+### Anyone:  Create new price oracle
 
-### Funder:  Create new claims group
+Create a new price oracle automaton, given the inputs of:
 
-Store a merkle root, and associated ERC20 funds, on chain.
+1. tokenA:  1st of 2 tokens in a Uniswap pair, whose price shall be monitored.
+2. tokenB:  2nd of 2 tokens in a Uniswap pair, whose price shall be monitored.
+3. period:  price sampling time period, in seconds.
 
-**WARNING**:  There is no on-chain validation that funds supplied equal the
-funds required to fully satisfy all claims.  The funder may under-fund.
+Returns the Ethereum address of the newly created price oracle contract.
 
-### Anyone:  Add more funds to claims group.
-
-Supply additional quantity of asset to the claims group.
-
-Usually the funder calls this operation, but that is not a requirement.
-Once a claims group is created, anyone may supply additional funds.
-
-### Funder:  Withdraw funds from claims group.
-
-The funder (owner) may withdraw funds from the claims group,
-if-and-only-if the Withdraw Lock is not locked.
-
-### Anyone:  On-chain ERC20 mass-send
-
-A separate MultiTransfer contract is provided, which provides the
-simple utility of
-
-1. Receive N amount of an ERC20 token
-2. Send tokens to a list of (address,amount) pairs.
-
-This contract and function is not tied in any way to the above
-merkle-related operations, and is provided as an alternate mass-pay
-operation for ERC20 tokens.
-
-## Security notes
-
-### Under-funding
-
-It appears prohibitively expensive to validate that a holding is fully
-funded.  (Solutions welcome)
-
-As a consequence, it is possible to under-fund a claims group.
-
-### Withdraw locking
-
-The withdraw lock feature permits disabling of withdrawals until
-a specified time.
-
-To disable this feature, simply set the lock time to zero, or some time
-in the past.   To permanently lock the funds, set the lock time to a
-maximum, or an arbitrary time millions of years in the future.
 
 ## Setup.
 1. Install packages
