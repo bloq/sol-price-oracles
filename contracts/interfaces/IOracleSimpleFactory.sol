@@ -8,5 +8,6 @@ interface IOracleSimpleFactory {
 
     function oracleCount() external view returns (uint);
     function oracleAt(uint idx) external view returns (address);
+    function getOracle(address tokenA, address tokenB, uint _period) external view returns (address);
     function createOracle(address factory, address tokenA, address tokenB, uint _period) external returns (address oracleaddr);
 }
