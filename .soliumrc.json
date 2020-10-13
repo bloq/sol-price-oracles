@@ -2,7 +2,7 @@
   "extends": "solium:recommended",
   "plugins": ["security"],
   "rules": {
-    "quotes": ["error", "single"],
+    "quotes": ["error", "double"],
     "indentation": ["error", 4],
     "linebreak-style": ["error", "unix"],
     "error-reason": ["error"]

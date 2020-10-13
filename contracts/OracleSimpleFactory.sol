@@ -1,33 +1,43 @@
-
 // SPDX-License-Identifier: GPL-3.0
 
 pragma solidity ^0.6.6;
 
-import './interfaces/IOracleSimpleFactory.sol';
-import './OracleSimple.sol';
+import "./interfaces/IOracleSimpleFactory.sol";
+import "./OracleSimple.sol";
 
 contract OracleSimpleFactory is IOracleSimpleFactory {
     address[] private allOracles;
-    mapping(address => mapping(address => mapping(uint => address))) private oracleIdx;
+    mapping(address => mapping(address => mapping(uint256 => address))) private oracleIdx;
 
-    constructor() public {
-    }
+    constructor() public {}
 
-    function oracleCount() external override view returns (uint) {
+    function oracleCount() external view override returns (uint256) {
         return allOracles.length;
     }
 
-    function oracleAt(uint idx) external override view returns (address) {
+    function oracleAt(uint256 idx) external view override returns (address) {
         require(idx < allOracles.length);
         return allOracles[idx];
     }
 
-    function getOracle(address tokenA, address tokenB, uint _period) external override view returns (address) {
+    function getOracle(
+        address tokenA,
+        address tokenB,
+        uint256 _period
+    ) external view override returns (address) {
         return oracleIdx[tokenA][tokenB][_period];
     }
 
-    function createOracle(address factory, address tokenA, address tokenB, uint _period) external override returns (address oracleaddr) {
-        require(oracleIdx[tokenA][tokenB][_period] == address(0), "Oracle already exists for token pair");
+    function createOracle(
+        address factory,
+        address tokenA,
+        address tokenB,
+        uint256 _period
+    ) external override returns (address oracleaddr) {
+        require(
+            oracleIdx[tokenA][tokenB][_period] == address(0),
+            "Oracle already exists for token pair"
+        );
 
         // create new oracle contract
         oracleaddr = address(new OracleSimple(factory, tokenA, tokenB, _period));
