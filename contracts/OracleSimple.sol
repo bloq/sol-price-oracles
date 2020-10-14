@@ -15,7 +15,7 @@ import "./interfaces/IOracleSimple.sol";
 contract OracleSimple is IOracleSimple {
     using FixedPoint for *;
 
-    uint256 public PERIOD;
+    uint256 public immutable PERIOD;
     IUniswapV2Pair immutable PAIR;
     address public immutable token0;
     address public immutable token1;
