@@ -2,10 +2,7 @@
 const HDWalletProvider = require("@truffle/hdwallet-provider")
 require("dotenv").config()
 var config = require('config')
-let provider
-if (process.env.DEPLOYMENT_ACCOUNT_KEY) {
-  provider = new HDWalletProvider(process.env.DEPLOYMENT_ACCOUNT_KEY, config.provider)
-}
+
 module.exports = {
 	// See <http://truffleframework.com/docs/advanced/configuration> to customize your Truffle configuration!
 	// contracts_build_directory: path.join(__dirname, "client/src/contracts"),
@@ -18,21 +15,21 @@ module.exports = {
 	    skipDryRun: true
 	  },
 	  ropsten: {
-		provider,
+	    provider: new HDWalletProvider(process.env.DEPLOYMENT_ACCOUNT_KEY, "https://ropsten.infura.io/v3/" + process.env.INFURA_API_KEY),
 		network_id: 3,
 	    gas: 7000000,
 		gasPrice: 5000000000, // 5 Gwei
 		skipDryRun: true
 	  },
 	  kovan: {
-		provider,
+	    provider: new HDWalletProvider(process.env.DEPLOYMENT_ACCOUNT_KEY, "https://kovan.infura.io/v3/" + process.env.INFURA_API_KEY),
 		network_id: 42,
 	    gas: 5000000,
 		gasPrice: 5000000000, // 5 Gwei
 		skipDryRun: true
 	  },
 	  mainnet: {
-		provider,
+	    provider: new HDWalletProvider(process.env.DEPLOYMENT_ACCOUNT_KEY, config.provider),
 		network_id: 1,
 	    gas: 6000000,
 		gasPrice: 42000000000
@@ -40,7 +37,7 @@ module.exports = {
 	},
 	compilers: {
 		solc: {
-			version: "^0.6.6",
+			version: "0.6.12",
 		},
 	},
 }
