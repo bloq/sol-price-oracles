@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0
 
-pragma solidity ^0.6.6;
+pragma solidity 0.7.3;
 
 import "./interfaces/IOracleSimpleFactory.sol";
 import "./OracleSimple.sol";
 
 contract OracleSimpleFactory is IOracleSimpleFactory {
     address[] private allOracles;
-    mapping(address => bool) isOurs;
+    mapping(address => bool) public isOurs;
     mapping(address => mapping(address => mapping(uint256 => address))) private oracleIdx;
 
     function ours(address a) external view override returns (bool) {
@@ -37,10 +37,7 @@ contract OracleSimpleFactory is IOracleSimpleFactory {
         address tokenB,
         uint256 _period
     ) external override returns (address oracleaddr) {
-        require(
-            oracleIdx[tokenA][tokenB][_period] == address(0),
-            "Oracle already exists for token pair"
-        );
+        require(oracleIdx[tokenA][tokenB][_period] == address(0), "Oracle already exists");
 
         // create new oracle contract
         oracleaddr = address(new OracleSimple(factory, tokenA, tokenB, _period));

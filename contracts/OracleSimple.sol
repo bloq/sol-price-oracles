@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
 
-pragma solidity ^0.6.6;
+pragma solidity 0.7.3;
 
 import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
 import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
@@ -15,8 +15,12 @@ import "./interfaces/IOracleSimple.sol";
 contract OracleSimple is IOracleSimple {
     using FixedPoint for *;
 
+    /* solhint-disable var-name-mixedcase */
     uint256 public immutable PERIOD;
-    IUniswapV2Pair immutable PAIR;
+    IUniswapV2Pair public immutable PAIR;
+
+    /* solhint-enable */
+
     address public immutable token0;
     address public immutable token1;
 
@@ -31,7 +35,7 @@ contract OracleSimple is IOracleSimple {
         address tokenA,
         address tokenB,
         uint256 _period
-    ) public {
+    ) {
         PERIOD = _period;
         IUniswapV2Pair _pair = IUniswapV2Pair(UniswapV2Library.pairFor(factory, tokenA, tokenB));
         PAIR = _pair;
